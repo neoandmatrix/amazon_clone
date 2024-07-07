@@ -1,0 +1,112 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model USER {
+  id          Int         @unique @default(autoincrement())
+  email       String      @unique
+  name        String
+  password    String 
+  wishlist    WISHLIST? 
+  cart        CART? 
+  reviews     REVIEWS[]   
+  address     ADDRESS[]
+
+}
+
+model CART {
+  id          Int         @unique @default(autoincrement())
+  products    CART_PRODUCT[]
+  useId       Int         @unique
+  user        USER        @relation(fields: [useId],references: [id])
+}
+
+model CART_PRODUCT {
+  id          Int         @unique @default(autoincrement())
+  quantity    Int
+  cartId      Int
+  cart        CART        @relation(fields: [cartId],references: [id])
+  productId   Int
+  product     PRODUCT     @relation(fields: [productId],references: [id])  
+}
+
+
+model PRODUCT {
+
+  id            Int           @id @default(autoincrement())
+  price         Int
+  quantity      Int
+  title         String
+  description   String
+  imageLink     String?       @default("www.google.com")
+  brandName     String 
+  wishListId    Int?
+  wishList      WISHLIST?      @relation(fields: [wishListId],references: [id])  
+  cartProduct   CART_PRODUCT[]
+  category      CATEGORIES[]
+  brandId       Int
+  brand         BRANDS         @relation(fields: [brandId],references: [id])
+  orderItemId   Int?
+  orderItem     ORDER_PRODUCT? @relation(fields: [orderItemId],references: [id])
+  reviws        REVIEWS[]
+}
+
+model CATEGORIES {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  products    PRODUCT[]
+
+}
+
+model BRANDS {
+  id          Int     @unique @default(autoincrement())
+  name        String  @unique
+  description String
+  logoLink    String  @default("null")
+  product     PRODUCT[]
+}
+
+model ORDERS {
+  id               Int       @unique @default(autoincrement())
+  address          String
+  total            Int
+  orderItem        ORDER_PRODUCT[]
+}
+
+model ORDER_PRODUCT {
+  id              Int       @unique @default(autoincrement())
+  quantity        Int
+  product         PRODUCT[]
+  orderId         Int
+  order           ORDERS    @relation(fields: [orderId],references: [id])
+}
+
+model WISHLIST {
+  id          Int          @unique  @default(autoincrement())
+  products    PRODUCT[]
+  userId      Int          @unique
+  user        USER         @relation(fields: [userId],references: [id])
+}
+
+model REVIEWS {
+  id          Int         @unique @default(autoincrement())
+  reviewText  String  
+  productId   Int
+  product     PRODUCT     @relation(fields: [productId],references: [id])
+  userId      Int
+  user        USER        @relation(fields: [userId],references: [id])
+}
+
+model ADDRESS {
+  id          Int       @unique @default(autoincrement())
+  addressText String
+  userId      Int
+  user        USER      @relation(fields: [userId],references: [id])
+  
+}
