@@ -1,26 +1,37 @@
-"use client"
+import SingleProduct from "@/components/singleProductPage"
+import prisma from "@/database/db"
 
-import getProductDetails from "@/actions/getProduct";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 
-export default function Page({ params }: { params: { id: string } }) {
-    // const router = useRouter()
-    // const route = router.query.id as string;
-    // const id = parseInt(route)
+export default async function Page({ params }: { params: { id: string } }) {
+    
+    try {
+        const productDetails = await prisma.pRODUCT.findFirst({
+            where : {
+                id : parseInt(params.id)
+            },
+            include : {
+                category : true,
+                reviws : true,
+                _count:true,
+                
+            }
+        })
 
-    const [productDetails , setProductDetails] = useState<any>()
+        return <div>
+            <SingleProduct
+                name={productDetails!.title}
+                price={productDetails!.price}
+                description={productDetails!.description}
+                brandName={productDetails!.brandName}
+                reviews={productDetails!.reviws}
+                categories={productDetails!.category}
+            ></SingleProduct>
+        </div>
+    
+    } catch (error) {
+        console.log(error)
+        return <div>some error occured</div>
 
-    useEffect(()=>{
-        async function details() {
-          const fetchedDetails = await getProductDetails(parseInt(params.id));
-            setProductDetails(fetchedDetails)
-        } 
-
-        details()
-    },[])
-
-    return <div>
-        {JSON.stringify(productDetails)}
-    </div>
-}
+    }
+    
+  }
