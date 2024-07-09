@@ -1,5 +1,6 @@
 import { FaShoppingCart } from "react-icons/fa";
 import Link from "next/link"
+import ChangeUser from "./changeUserButton";
 
 export default function AppBar(){
     return <>
@@ -10,6 +11,7 @@ export default function AppBar(){
                     <FaShoppingCart />
                 </Link> 
             </div>
+            <ChangeUser/> 
         </div> 
         
     </>

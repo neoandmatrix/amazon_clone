@@ -1,3 +1,4 @@
+import AddToCartButton from "@/components/addToCartButton"
 import SingleProduct from "@/components/singleProductPage"
 import prisma from "@/database/db"
 
@@ -26,6 +27,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 reviews={productDetails!.reviws}
                 categories={productDetails!.category}
             ></SingleProduct>
+            <AddToCartButton productId={parseInt(params.id)}/>
         </div>
     
     } catch (error) {

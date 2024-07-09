@@ -1,5 +1,11 @@
 import { CategoryType, ReviewType } from "@/utils/types";
 import Link from "next/link";
+import Button from "./button";
+import prisma from "@/database/db";
+
+const addToCart = async () => {
+   
+}
 
 export default function SingleProduct({
     name,
